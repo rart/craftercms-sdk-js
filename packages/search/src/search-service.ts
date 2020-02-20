@@ -44,9 +44,9 @@ export class SearchService extends SDKService {
   static search(queryOrParams: Query | Object, config: CrafterConfig): TodoSearchReturnType {
     let requestURL;
     const params = (queryOrParams instanceof Query)
-      ? queryOrParams.params
-      : queryOrParams,
-      searchParams = new URLSearchParams();
+            ? queryOrParams.params
+            : queryOrParams,
+          searchParams = new URLSearchParams();
 
     if (queryOrParams instanceof ElasticQuery) {
       requestURL = composeUrl(config, crafterConf.getConfig().endpoints.ELASTICSEARCH) + '?crafterSite=' + config.site;
@@ -72,7 +72,7 @@ export class SearchService extends SDKService {
 
       searchParams.append('index_id', config.searchId ? config.searchId : config.site);
 
-      return SDKService.httpGet(requestURL, searchParams);
+      return SDKService.httpGet(requestURL, searchParams);  
     }
 
   }
@@ -86,23 +86,25 @@ export class SearchService extends SDKService {
   static createQuery<T extends Query>(searchEngineOrParams: SearchEngines | Object = 'solr', params: Object = {}): T {
     let
       query,
+      queryId = (params && params['uuid'])
+        ? params['uuid']
+        : uuid(),
       engine = (typeof searchEngineOrParams === 'string')
         ? (<string>searchEngineOrParams).toLowerCase()
-        : 'solr',
-      queryId = (params && params['uuid']) ? params['uuid'] : uuid();
+        : 'solr';
 
     if (typeof searchEngineOrParams !== 'string') {
       params = searchEngineOrParams;
     }
 
     switch (engine) {
-      case 'solr':
-        query = new SolrQuery();
-        break;
       case 'elastic':
       case 'elasticsearch':
-      default:
         query = new ElasticQuery();
+        break;
+      case 'solr':
+      default:
+        query = new SolrQuery();
         break;
     }
 
