@@ -1,10 +1,9 @@
 /*
- * Copyright (C) 2007-2019 Crafter Software Corporation. All rights reserved.
+ * Copyright (C) 2007-2020 Crafter Software Corporation. All Rights Reserved.
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published
- * by the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU Lesser General Public License version 3
+ * as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -67,7 +66,7 @@ export abstract class Messenger {
     observerOrNext: ObserverOrNext<R>,
     ...operators: OperatorFunction<T, R>[]): Subscription {
     return this.messages$
-      .pipe(...operators)
+      .pipe.apply(this.messages$, operators)
       .subscribe(observerOrNext);
   }
 
@@ -86,7 +85,7 @@ export abstract class Messenger {
         filter((message: Message) => message.topic === topic));
     }
     return this.messages$
-      .pipe(...ops.concat(operations))
+      .pipe.apply(this.messages$, ops.concat(operations))
       .subscribe(subscriber);
   }
 
@@ -130,7 +129,7 @@ export abstract class Messenger {
           data: any = null,
           scope: MessageScope = MessageScope.Broadcast): void {
     let message: Message;
-    if (topicOrMessage in MessageTopic) {
+    if (typeof topicOrMessage === 'string' && topicOrMessage in MessageTopic) {
       message = {
         topic: <MessageTopic>topicOrMessage,
         data,

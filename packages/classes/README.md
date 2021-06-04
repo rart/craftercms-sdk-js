@@ -1,32 +1,38 @@
+![npm (scoped)](https://img.shields.io/npm/v/@craftercms/classes?style=plastic)
+
 # @craftercms/classes
 
 This package contains useful classes for developing craftercms websites & applications.
 
 ## Usage
 
+All of Crafter CMS packages can be used either via npm or in plain html/javascript via regular script imports.
+
 - Install module using `yarn` or `npm`
-  - Yarn: `yarn add @craftercms/classes`
-  - npm: `npm install @craftercms/classes`
+  - `yarn add @craftercms/classes` or
+  - `npm install @craftercms/classes`
 - Import and use the classes you need
 
-## Classes
----
+## Package Index
 
-## SDK Service
+The examples below assume usage in the style of using via npm. If you're using the bundles, 
+directly importing as a script in the browser, these functions will be under the global variable
+named `craftercms.classes` (i.e. `window.craftercms.classes`).
+
+### SDK Service
 
 `SDKService` Provides http get and post methods for Crafter services 
 
-## Examples
+#### Examples
 
-```ts
-  import { SDKService } from '@craftercms/classes';
+```typescript
+  import { httpGet } from '@craftercms/classes';
 
-  const requestURL = "/crafter-url";
+  const requestURL = "/some-url";
 
-  SDKService.httpGet(requestURL, { 
+  httpGet(requestURL, { 
     crafterSite: "editorial"
-  })
-  .subscribe((response) => {
-    ...
+  }).subscribe((response) => {
+    console.log(response);
   })
 ```

@@ -1,10 +1,9 @@
 /*
- * Copyright (C) 2007-2019 Crafter Software Corporation. All rights reserved.
+ * Copyright (C) 2007-2020 Crafter Software Corporation. All Rights Reserved.
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published
- * by the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU Lesser General Public License version 3
+ * as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -17,22 +16,26 @@
 
 'use strict';
 
-const resolvePlugin = require('rollup-plugin-node-resolve');
+const nodeResolve = require('@rollup/plugin-node-resolve');
+const commonjs = require('@rollup/plugin-commonjs');
 const sourcemaps = require('rollup-plugin-sourcemaps');
 
 const globals = {
 
   'rxjs': 'rxjs',
+  'react': 'React',
+  'react-dom': 'ReactDOM',
   'rxjs/ajax': 'rxjs.ajax',
   'rxjs/operators': 'rxjs.operators',
 
-  '@craftercms/utils': 'craftercms.utils',
   '@craftercms/classes': 'craftercms.classes',
+  '@craftercms/content': 'craftercms.content',
+  '@craftercms/ice': 'craftercms.ice',
   '@craftercms/models': 'craftercms.models',
-  '@craftercms/engine': 'craftercms.engine',
-  '@craftercms/search': 'craftercms.search',
   '@craftercms/redux': 'craftercms.redux',
-  '@craftercms/ice': 'craftercms.ice'
+  '@craftercms/search': 'craftercms.search',
+  '@craftercms/utils': 'craftercms.utils',
+  '@craftercms/ice/react': 'craftercms.iceReact'
 
 };
 
@@ -65,7 +68,47 @@ function createRollupConfig(pkg, opts) {
       globals,
     },
     plugins: [
-      resolvePlugin(),
+      nodeResolve({
+        preferBuiltins: false,
+        mainFields: ['module', 'main', 'browser']
+      }),
+      commonjs({
+        namedExports: {
+          'uuid': ['uuid'],
+          'react-dom': ['createPortal', 'findDOMNode', 'hydrate', 'render', 'unmountComponentAtNode', 'flushSync'],
+          'react-is': ['isValidElementType', 'ForwardRef'],
+          'prop-types': ['elementType'],
+          'react': [
+            'Children',
+            'createRef',
+            'Component',
+            'PureComponent',
+            'createContext',
+            'forwardRef',
+            'lazy',
+            'memo',
+            'useCallback',
+            'useContext',
+            'useEffect',
+            'useImperativeHandle',
+            'useDebugValue',
+            'useLayoutEffect',
+            'useMemo',
+            'useReducer',
+            'useRef',
+            'useState',
+            'Fragment',
+            'Profiler',
+            'StrictMode',
+            'Suspense',
+            'createElement',
+            'cloneElement',
+            'createFactory',
+            'isValidElement',
+            'version'
+          ]
+        }
+      }),
       sourcemaps()
     ],
     external: Object.keys(globals)

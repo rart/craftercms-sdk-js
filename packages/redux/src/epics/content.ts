@@ -1,10 +1,9 @@
 /*
- * Copyright (C) 2007-2019 Crafter Software Corporation. All rights reserved.
+ * Copyright (C) 2007-2020 Crafter Software Corporation. All Rights Reserved.
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published
- * by the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU Lesser General Public License version 3
+ * as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -15,8 +14,7 @@
  * along with this program. If not, see http://www.gnu.org/licenses/.
  */
 
-import { Observable } from 'rxjs';
-import 'rxjs/add/observable/of';
+import { Observable, of } from 'rxjs';
 import { AnyAction } from 'redux';
 import { mergeMap, map, catchError } from 'rxjs/operators';
 import { ofType } from 'redux-observable';
@@ -47,7 +45,7 @@ export const getItemEpic =
             item,
             url: payload
           })),
-          catchError(() => Observable.of(getItemComplete({
+          catchError(() => of(getItemComplete({
             url: payload
           })))
         ))
@@ -63,11 +61,11 @@ export const getDescriptorEpic =
                 descriptor,
                 url: payload
               })),
-              catchError(() => Observable.of(getDescriptorComplete({
+              catchError(() => of(getDescriptorComplete({
                 url: payload
               })))
           ))
-          
+
   );
 
 export const getChildrenEpic =
@@ -80,7 +78,7 @@ export const getChildrenEpic =
                 children,
                 url: payload
               })),
-              catchError(() => Observable.of(getChildrenComplete({
+              catchError(() => of(getChildrenComplete({
                 url: payload
               })))
           ))
@@ -96,7 +94,7 @@ export const getTreeEpic =
                 tree,
                 url: payload.url
               })),
-              catchError(() => Observable.of(getTreeComplete({
+              catchError(() => of(getTreeComplete({
                 url: payload.url
               })))
           ))
@@ -112,7 +110,7 @@ export const getNavEpic =
                 nav,
                 url: payload.url
               })),
-              catchError(() => Observable.of(getNavComplete({
+              catchError(() => of(getNavComplete({
                 url: payload.url
               })))
           ))
@@ -128,7 +126,7 @@ export const getNavBreadcrumbEpic =
                 breadcrumb,
                 url: payload.url
               })),
-              catchError(() => Observable.of(getNavBreadcrumbComplete({
+              catchError(() => of(getNavBreadcrumbComplete({
                 url: payload.url
               })))
           ))

@@ -1,10 +1,9 @@
 /*
- * Copyright (C) 2007-2019 Crafter Software Corporation. All rights reserved.
+ * Copyright (C) 2007-2020 Crafter Software Corporation. All Rights Reserved.
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published
- * by the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU Lesser General Public License version 3
+ * as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -15,7 +14,16 @@
  * along with this program. If not, see http://www.gnu.org/licenses/.
  */
 
-import { applyMiddleware, compose, Store, createStore, combineReducers, AnyAction, ReducersMapObject, Middleware } from 'redux';
+import {
+  applyMiddleware,
+  compose,
+  Store,
+  createStore,
+  combineReducers,
+  AnyAction,
+  ReducersMapObject,
+  Middleware
+} from 'redux';
 import { combineEpics, createEpicMiddleware, Epic } from 'redux-observable';
 
 import { log } from '@craftercms/utils';
@@ -23,14 +31,14 @@ import { CrafterState, CrafterNamespacedState, LookupTable, Item } from '@crafte
 import { allEpics, allReducers } from '@craftercms/redux';
 
 /**
- * Retrieves a crafter-redux store based on a config, combining craftercms states/epics with 
+ * Retrieves a crafter-redux store based on a config, combining craftercms states/epics with
  * optional extra states/epics from config
  */
 export function createReduxStore(config: {
   namespace?: string,
   namespaceCrafterState?: boolean,
   reducerMixin?: ReducersMapObject<any, any>,
-  epicsArray?: Epic<AnyAction, Store<any>>[],
+  epicsArray?: Epic[],
   additionalMiddleWare?: Middleware[],
   reduxDevTools?: boolean
 } = {}) {
@@ -56,7 +64,7 @@ export function createReduxStore(config: {
     ? <ReducersMapObject<CrafterNamespacedState, AnyAction>>{ [config.namespace]: combineReducers(allReducers) }
     : <ReducersMapObject<CrafterState, AnyAction>>allReducers;
 
-  var middlewares = config.additionalMiddleWare 
+  var middlewares = config.additionalMiddleWare
     ? [ epicMiddleware, ...config.additionalMiddleWare ]
     : [ epicMiddleware ];
 
@@ -70,9 +78,9 @@ export function createReduxStore(config: {
 }
 
 /**
- * Creates a redux store with all the crafter-redux details attached. Optionally, custom app reducers and/or epics 
- * may be supplied to create the store as required by client application. Crafter state props may be nested under 
- * a namespace by setting the namespaceCrafterSate flag to true. The specific namespace (craftercms by default) may 
+ * Creates a redux store with all the crafter-redux details attached. Optionally, custom app reducers and/or epics
+ * may be supplied to create the store as required by client application. Crafter state props may be nested under
+ * a namespace by setting the namespaceCrafterSate flag to true. The specific namespace (craftercms by default) may
  * also be customised by supplying the namespace property to the config object.
  * @param {Store<CrafterNamespacedState>} store
  * @returns {CrafterState}
@@ -118,18 +126,18 @@ export function flattenEntries(item: Item, childrenProperty:string = 'children')
   //Removes children to store in entries.
   noChildren[childrenProperty] = null;
   entries[itemUrl] = noChildren;
-  
+
   childIds[itemUrl] = [];
-  
-  children = item[childrenProperty] 
-    ? [ ...item[childrenProperty] ] 
+
+  children = item[childrenProperty]
+    ? [ ...item[childrenProperty] ]
     : [];
 
   //If item has children
   if(children && children.length > 0){
 
     for (let child of children) {
-      //Adds child url (id) into childIds  
+      //Adds child url (id) into childIds
       childIds[itemUrl].push(child.url);
 
       //Recursive call

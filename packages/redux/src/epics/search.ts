@@ -1,10 +1,9 @@
 /*
- * Copyright (C) 2007-2019 Crafter Software Corporation. All rights reserved.
+ * Copyright (C) 2007-2020 Crafter Software Corporation. All Rights Reserved.
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published
- * by the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU Lesser General Public License version 3
+ * as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -17,7 +16,7 @@
 
 import { Observable, of } from 'rxjs';
 import { mergeMap, map, catchError } from 'rxjs/operators';
-import { AnyAction, Store } from 'redux';
+import { AnyAction } from 'redux';
 import { ofType } from 'redux-observable';
 
 import { crafterConf } from '@craftercms/classes';
@@ -26,7 +25,6 @@ import {
   SEARCH,
   searchComplete
 } from '../actions/search';
-import { CrafterNamespacedState } from '@craftercms/models';
 
 export const searchEpic =
   (action$: Observable<AnyAction>) => action$.pipe(
@@ -38,7 +36,7 @@ export const searchEpic =
             response: response.response ? response.response : response,
             queryId: payload.uuid
           })),
-          catchError(() => Observable.of(searchComplete({
+          catchError(() => of(searchComplete({
             queryId: payload.uuid
           })))
         ))
