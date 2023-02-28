@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2007-2020 Crafter Software Corporation. All Rights Reserved.
+ * Copyright (C) 2007-2021 Crafter Software Corporation. All Rights Reserved.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License version 3
@@ -20,6 +20,7 @@ import { CrafterConfig } from '@craftercms/models';
 
 const DEFAULTS: CrafterConfig = {
   site: '',
+  cors: false,
   baseUrl: '',
   searchId: null,
   endpoints: {
@@ -30,10 +31,10 @@ const DEFAULTS: CrafterConfig = {
     GET_NAV_TREE: '/api/1/site/navigation/tree.json',
     GET_BREADCRUMB: '/api/1/site/navigation/breadcrumb.json',
     TRANSFORM_URL: '/api/1/site/url/transform.json',
-    SEARCH: 'crafter-search/api/2/search/search.json',
-    ELASTICSEARCH: 'api/1/site/elasticsearch/search'
+    ELASTICSEARCH: '/api/1/site/elasticsearch/search'
   },
-  contentTypeRegistry: {}
+  contentTypeRegistry: {},
+  headers: {}
 };
 
 class ConfigManager {
@@ -97,15 +98,11 @@ class ConfigManager {
   }
 
   mix(mixin: Partial<CrafterConfig> = {}): CrafterConfig {
-    return {
-      ...this.config,
-      ...mixin
-    };
+    return extendDeepExistingProps({ ...this.config }, mixin);
   }
 
   configure(nextConfig: Partial<CrafterConfig>): void {
-    const newConfig: CrafterConfig = extendDeepExistingProps({ ...this.config }, nextConfig);
-    this.publishConfig(newConfig);
+    this.publishConfig(this.mix(nextConfig));
   }
 }
 

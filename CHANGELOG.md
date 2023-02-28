@@ -1,5 +1,65 @@
 # SDK Changelog
 
+## 2.0.7
+
+### @craftercms/content
+- Fix `getDescriptor` crashing when `config` isn't supplied.
+
+## 2.0.6
+
+### @craftercms/content
+
+- Add `fetchModelByPath` and `fetchModelByUrl` shortcuts methods
+- Improve `parseDescriptor` typings
+- Improve `urlTransform` typings
+
+### @craftercms/classes
+
+- Add basic `crafterConf` docs
+
+## 2.0.5
+
+### @craftercms/content
+- Add prop data type parsing to `parsedDescriptor`
+
+### @craftercms/ice
+- Add v4 support to `addAuthoringSupport`
+
+## 2.0.4
+
+### @craftercms/content
+- Fix `flatten` argument to getDescriptor getting lost/ignored
+
+### @craftercms/models
+- Move types from other files into models package
+- Adding missing properties to NavigationItem interface
+
+## 2.0.3
+
+### @craftercms/classes
+- Change SDKService.httpGet to use fetch instead of rxjs.ajax
+- Fix fetch's mode (for cors)
+- Extend support for other fetch modes
+- Switch from using URLSearchParams to using query-string for the same purpose
+
+## 2.0.2
+- Allow CORs
+  - Use `crafterConf.configure({ cors: true, ... })` to enable CORs mode.
+- Fix `fetchIsAuthoring` and `addAuthoringSupport` not retrieving for baseUrl from `crafterConf`.
+
+## 2.0.1
+
+### @craftercms/redux
+- Upgrade to redux-observable 2
+
+## 2.0.0
+
+### All packages
+- Update to rxjs @ ^7
+
+### @craftercms/search
+- Remove support for Solr
+
 ## 1.2.4
 
 ### @craftercms/content

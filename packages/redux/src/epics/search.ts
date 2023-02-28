@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2007-2020 Crafter Software Corporation. All Rights Reserved.
+ * Copyright (C) 2007-2021 Crafter Software Corporation. All Rights Reserved.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License version 3
@@ -25,6 +25,7 @@ import {
   SEARCH,
   searchComplete
 } from '../actions/search';
+import { SearchResult } from "@craftercms/models";
 
 export const searchEpic =
   (action$: Observable<AnyAction>) => action$.pipe(
@@ -32,8 +33,8 @@ export const searchEpic =
     mergeMap(({ payload }) =>
       SearchService.search(payload, crafterConf.getConfig())
         .pipe(
-          map(response => searchComplete({
-            response: response.response ? response.response : response,
+          map((response: SearchResult) => searchComplete({
+            response,
             queryId: payload.uuid
           })),
           catchError(() => of(searchComplete({

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2007-2020 Crafter Software Corporation. All Rights Reserved.
+ * Copyright (C) 2007-2021 Crafter Software Corporation. All Rights Reserved.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License version 3
@@ -14,14 +14,19 @@
  * along with this program. If not, see http://www.gnu.org/licenses/.
  */
 
-import { ContentInstance } from '@craftercms/models';
+import { ContentInstance, CrafterConfig } from '@craftercms/models';
+import { crafterConf } from '@craftercms/classes';
 
 declare namespace window {
   const crafterRequire: any;
+  const craftercms: {
+    xb: {
+      initInContextEditing(props: { path: string; props: Record<string, any> }): { unmount(): void }
+    }
+  };
 }
 
-interface BaseCrafterConfig {
-  baseUrl?: string;
+export interface BaseCrafterConfig extends Pick<CrafterConfig, 'site' | 'baseUrl'> {
 }
 
 export interface ICEConfig {
@@ -60,17 +65,24 @@ const printedErrorCache = {
   invalidPath: {}
 };
 
-export function addAuthoringSupport(config?: BaseCrafterConfig): Promise<any> {
-  config = { baseUrl: '', ...(config || {}) };
+export function addAuthoringSupport(config?: Partial<BaseCrafterConfig & { xb?: boolean }>): Promise<any> {
+  const isV4 = Boolean(config?.xb);
+  config = crafterConf.mix(config);
   return new Promise((resolve) => {
     const script = document.createElement('script');
-    script.src = `${config.baseUrl}/studio/static-assets/libs/requirejs/require.js`;
+    script.src = isV4
+      ? `${config.baseUrl}/studio/static-assets/scripts/craftercms-xb.umd.js`
+      : `${config.baseUrl}/studio/static-assets/libs/requirejs/require.js`;
     script.addEventListener('load', () => {
-      window.crafterRequire?.([`${config.baseUrl}/studio/overlayhook?extensionless`], () => {
-        window.crafterRequire(['guest'], (guest) => {
-          resolve(guest);
+      if (isV4) {
+        resolve(window.craftercms?.xb);
+      } else {
+        window.crafterRequire?.([`${config.baseUrl}/studio/overlayhook?.js`], () => {
+          window.crafterRequire(['guest'], (guest) => {
+            resolve(guest);
+          });
         });
-      });
+      }
     });
     document.head.appendChild(script);
   });
@@ -207,9 +219,9 @@ export const repaintPencils: (() => void) = (function () {
   };
 })();
 
-export function fetchIsAuthoring(config?: BaseCrafterConfig): Promise<boolean> {
-  config = { baseUrl: '', ...(config || {}) };
-  return fetch(`${config.baseUrl}/api/1/config/preview.json`)
+export function fetchIsAuthoring(config?: Partial<BaseCrafterConfig>): Promise<boolean> {
+  let cfg = crafterConf.mix(config);
+  return fetch(`${cfg.baseUrl}/api/1/config/preview.json?crafterSite=${cfg.site}`, cfg.cors ? { mode: 'cors' } : {})
     .then((response) => response.json())
     .then((response) => response.preview);
 }

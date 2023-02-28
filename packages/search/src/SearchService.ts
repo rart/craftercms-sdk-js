@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2007-2020 Crafter Software Corporation. All Rights Reserved.
+ * Copyright (C) 2007-2021 Crafter Software Corporation. All Rights Reserved.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License version 3
@@ -20,98 +20,55 @@ import { composeUrl, SearchEngines } from '@craftercms/utils';
 import { crafterConf, SDKService } from '@craftercms/classes';
 import { CrafterConfig } from '@craftercms/models';
 import { Query } from './query';
-import { SolrQuery } from '@craftercms/search';
 import { ElasticQuery } from '@craftercms/search';
 
 import uuid from 'uuid';
 import 'url-search-params-polyfill';
-
-// TODO: Add correct return types
-type TodoSearchReturnType = Observable<any>;
+import { SearchResult } from "@craftercms/models/src/search";
 
 /**
  * Does a full-text search and returns a Map model.
  * @param {Query} query - the query object
  */
-export function search(query: Query, config?: CrafterConfig): TodoSearchReturnType;
-export function search(params: Object, config?: CrafterConfig): TodoSearchReturnType;
-export function search(queryOrParams: Query | Object, config?: CrafterConfig): TodoSearchReturnType {
+export function search(query: Query, config?: CrafterConfig): Observable<SearchResult>;
+export function search(params: Object, config?: CrafterConfig): Observable<SearchResult>;
+export function search(queryOrParams: Query | Object, config?: CrafterConfig): Observable<SearchResult> {
   config = crafterConf.mix(config);
   let requestURL;
   const params = (queryOrParams instanceof Query)
     ? queryOrParams.params
-    : queryOrParams,
-    searchParams = new URLSearchParams();
+    : queryOrParams;
 
   if (queryOrParams instanceof ElasticQuery) {
-    requestURL = composeUrl(config, crafterConf.getConfig().endpoints.ELASTICSEARCH) + '?crafterSite=' + config.site;
+    requestURL = composeUrl(config, config.endpoints.ELASTICSEARCH) + '?crafterSite=' + config.site;
 
     return SDKService.httpPost(requestURL, params)
       .pipe(map((response: any) => {
         return response.hits;
       }));
-  } else {
-    requestURL = composeUrl(config, crafterConf.getConfig().endpoints.SEARCH);
-
-    for (let param in params) {
-      if (params.hasOwnProperty(param)) {
-        if (Array.isArray(params[param])) {
-          for (let x = 0; x < params[param].length; x++) {
-            searchParams.append(param, params[param][x]);
-          }
-        } else {
-          searchParams.append(param, params[param]);
-        }
-      }
-    }
-
-    searchParams.append('index_id', config.searchId ? config.searchId : config.site);
-
-    return SDKService.httpGet(requestURL, searchParams);
   }
-
 }
 
 /**
  * Returns a new Query object
  */
-export function createQuery(): SolrQuery;
-export function createQuery<T extends Query>(searchEngine: SearchEngines): T;
-export function createQuery<T extends Query>(searchEngine: SearchEngines, params: Object): T;
-export function createQuery<T extends Query>(searchEngineOrParams: SearchEngines | Object = 'solr', params: Object = {}): T {
+
+export function createQuery<T extends Query>(params?: Object): T {
   let
     query,
     queryId = (params && params['uuid'])
       ? params['uuid']
-      : uuid(),
-    engine = (typeof searchEngineOrParams === 'string')
-      ? (<string>searchEngineOrParams).toLowerCase()
-      : 'solr';
+      : uuid();
 
-  if (typeof searchEngineOrParams !== 'string') {
-    params = searchEngineOrParams;
-  }
-
-  switch (engine) {
-    case 'elastic':
-    case 'elasticsearch':
-      query = new ElasticQuery();
-      break;
-    case 'solr':
-    default:
-      query = new SolrQuery();
-      break;
-  }
-
+  query = new ElasticQuery();
   Object.assign(query.params, params);
-
   query.uuid = queryId;
 
   return query;
 }
 
 /**
- * Implementation of Search Service for Solr
+ * Implementation of Search Service for ElasticSearch
  */
 export const SearchService = {
   search,

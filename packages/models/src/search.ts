@@ -14,4 +14,21 @@
  * along with this program. If not, see http://www.gnu.org/licenses/.
  */
 
-export * from './hooks';
+import { LookupTable } from "@craftercms/models";
+
+export interface SearchResultHit {
+  _id: string;
+  _index: string;
+  _score: string;
+  _source: LookupTable<any>;
+  _type: string;
+}
+
+export interface SearchResult {
+  hits: SearchResultHit[];
+  max_score: number;
+  total: {
+    relation: string;
+    value: number;
+  }
+}
