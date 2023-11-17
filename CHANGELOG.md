@@ -1,5 +1,44 @@
 # SDK Changelog
 
+## 4.1.2
+
+- No updates
+
+## 4.1.1
+
+- Update dependencies to address security vulnerabilities
+
+## 4.1.0
+
+### @craftercms/classes
+- Update search API endpoint from `/api/1/site/search/search.json` to `api/1/site/elasticsearch/search`.
+
+### @craftercms/content
+- `urlTransform`, `getTree`, `getItem`, `getChildren` fix config argument to accept partial CrafterConfig
+- Update createQuery usage examples without SearchEngine parameter.
+
+### @craftercms/models
+- Update Endpoints interface `ELASTICSEARCH` property to `SEARCH`.
+
+### @craftercms/search
+- Remove ElasticQuery query implementation for ElasticSearch.
+- Use `Query` class instead of removed `ElasticQuery` class in `createQuery` function.
+- Update createQuery usage examples without SearchEngine parameter.
+
+## 4.0.3
+
+### All packages
+- Switching SDK versioning to follow the CrafterCMS release version 
+
+### @craftercms/content
+- Update `parseProps` (internally used by `parseDescriptor`) to include `orderDefault_f` (parsed as `orderInNav`) in the resulting ContentInstance.
+- Update `parseProps` and `parseDescriptor` options to receive `systemPropMap`, `ignoredProps`, `systemProps` to be used during parsing.
+  - Note: modifying these props will require you to _open_ the `ContentInstance` interface and extend it accordingly.
+- Improve `parseDescriptor` signatures definitions
+- Parse values of `orderInNav` and `disabled` to their target data types (float and boolean, respectively).
+- Export `extractContent` and `extractChildren` functions.
+- Export the default `systemPropMap`, `ignoredProps`, `systemProps`.
+
 ## 2.0.7
 
 ### @craftercms/content
